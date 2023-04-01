@@ -22,7 +22,7 @@ jobs:
     - name: Setup
       run: |
         go mod tidy
-        cd ./src
+        cd ./cmd
 
     - name: Build
       run: go build -v ./...
