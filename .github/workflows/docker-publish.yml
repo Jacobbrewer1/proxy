@@ -7,7 +7,7 @@ name: Docker
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "bug/*" ]
 
 env:
   # Use docker.io for Docker Hub if empty
@@ -33,7 +33,7 @@ jobs:
       - name: Docker login
         run: |
           export CR_PAT=${{ secrets.GH_ACCESS_TOKEN }}
-          echo $CR_PAT | docker login ${{ env.REGISTRY }} -u ${GH_USERNAME} --password-stdin
+          docker login ${{ env.REGISTRY }} -u ${GH_USERNAME} -p $CR_PAT
 
       # Extract metadata (tags, labels) for Docker
       # https://github.com/docker/metadata-action
