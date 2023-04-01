@@ -5,15 +5,14 @@ name: go-pr
 
 on:
   pull_request:
-    branches: [
-      "main"
-    ]
+    branches: [ "main" ]
 
 jobs:
   code-quality:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - name: Checkout repository
+      uses: actions/checkout@v3
 
     - name: Set up Go
       uses: actions/setup-go@v3
@@ -23,7 +22,7 @@ jobs:
     - name: Setup
       run: |
         go mod tidy
-        cd ./src
+        cd ./cmd
 
     - name: Build
       run: go build -v ./...
