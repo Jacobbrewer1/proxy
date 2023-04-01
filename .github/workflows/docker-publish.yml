@@ -33,7 +33,7 @@ jobs:
       - name: Docker login
         run: |
           export CR_PAT=${{ secrets.GH_ACCESS_TOKEN }}
-          docker login ${{ env.REGISTRY }} -u ${GH_USERNAME} -p $CR_PAT
+          echo $CR_PAT | docker login ${{ env.REGISTRY }} --username ${GH_USERNAME}
 
       # Extract metadata (tags, labels) for Docker
       # https://github.com/docker/metadata-action
