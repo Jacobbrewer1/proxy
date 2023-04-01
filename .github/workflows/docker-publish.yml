@@ -32,7 +32,7 @@ jobs:
         
       - name: Docker login
         run: |
-          export CR_PAT=${{ secrets.github_access_token }}
+          export CR_PAT=${{ secrets.GH_ACCESS_TOKEN }}
           echo $CR_PAT | docker login ${{ env.REGISTRY }} -u ${GH_USERNAME} --password-stdin
 
       # Extract metadata (tags, labels) for Docker
