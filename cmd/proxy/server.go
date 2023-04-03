@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/jacobbrewer1/reverse-proxy/cmd/proxy/config"
 	"golang.org/x/exp/slog"
 	"log"
 	"net/http"
@@ -13,7 +14,7 @@ import (
 type proxyServer struct {
 	logger *slog.Logger
 	proxy  *httputil.ReverseProxy
-	cfg    *Config
+	cfg    *config.Config
 }
 
 func (p *proxyServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -25,14 +26,14 @@ func (p *proxyServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	prox.ServeHTTP(w, r)
 }
 
-func newProxyServer(logger *slog.Logger, cfg *Config) *proxyServer {
+func newProxyServer(logger *slog.Logger, cfg *config.Config) *proxyServer {
 	return &proxyServer{
 		logger: logger,
 		cfg:    cfg,
 	}
 }
 
-func newHttpServer(logger *slog.Logger, cfg *Config) *http.Server {
+func newHttpServer(logger *slog.Logger, cfg *config.Config) *http.Server {
 	return &http.Server{
 		Addr:         fmt.Sprintf(":%s", cfg.ListeningPort),
 		Handler:      middleware(http.DefaultServeMux, logger, cfg),
@@ -43,7 +44,7 @@ func newHttpServer(logger *slog.Logger, cfg *Config) *http.Server {
 	}
 }
 
-func middleware(_ http.Handler, logger *slog.Logger, cfg *Config) http.Handler {
+func middleware(_ http.Handler, logger *slog.Logger, cfg *config.Config) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ob := &resp{
 			ResponseWriter: w,

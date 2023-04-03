@@ -1,6 +1,6 @@
-# Reverse Proxy App
+# Proxy Applications
 
-A GO reverse proxy application that can be hosted.
+A GO proxy and reverse proxy application that can be self-hosted.
 
 ## Config
 

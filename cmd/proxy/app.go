@@ -2,13 +2,14 @@ package main
 
 import (
 	"fmt"
+	"github.com/jacobbrewer1/reverse-proxy/cmd/proxy/config"
 	"golang.org/x/exp/slog"
 	"net/http"
 )
 
 type App struct {
 	logger *slog.Logger
-	cfg    *Config
+	cfg    *config.Config
 	server *http.Server
 	proxy  *proxyServer
 }
@@ -19,7 +20,7 @@ func (a *App) start() error {
 	return a.server.ListenAndServe()
 }
 
-func newApp(logger *slog.Logger, server *http.Server, proxyServer *proxyServer, cfg *Config) *App {
+func newApp(logger *slog.Logger, server *http.Server, proxyServer *proxyServer, cfg *config.Config) *App {
 	return &App{
 		logger: logger,
 		cfg:    cfg,

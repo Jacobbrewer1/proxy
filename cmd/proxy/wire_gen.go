@@ -7,6 +7,7 @@
 package main
 
 import (
+	"github.com/jacobbrewer1/reverse-proxy/cmd/proxy/config"
 	"github.com/jacobbrewer1/reverse-proxy/pkg/logging"
 )
 
@@ -15,19 +16,19 @@ import (
 func InitializeApp() (*App, error) {
 	loggerName := _wireLoggerNameValue
 	loggerPath := _wireLoggerPathValue
-	config := logging.NewConfig(loggerName, loggerPath)
-	logger, err := logging.CommonLogger(config)
+	loggingConfig := logging.NewConfig(loggerName, loggerPath)
+	logger, err := logging.CommonLogger(loggingConfig)
 	if err != nil {
 		return nil, err
 	}
-	mainConfig := NewConfig(config)
-	server := newHttpServer(logger, mainConfig)
-	mainProxyServer := newProxyServer(logger, mainConfig)
-	app := newApp(logger, server, mainProxyServer, mainConfig)
+	configConfig := config.NewConfig(loggingConfig)
+	server := newHttpServer(logger, configConfig)
+	mainProxyServer := newProxyServer(logger, configConfig)
+	app := newApp(logger, server, mainProxyServer, configConfig)
 	return app, nil
 }
 
 var (
-	_wireLoggerNameValue = logging.LoggerName(appName)
-	_wireLoggerPathValue = logging.LoggerPath(logFilePath)
+	_wireLoggerNameValue = logging.LoggerName(config.AppName)
+	_wireLoggerPathValue = logging.LoggerPath(config.LogFilePath)
 )
