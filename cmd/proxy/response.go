@@ -2,14 +2,14 @@ package main
 
 import "net/http"
 
-type resp struct {
+type clientWriter struct {
 	http.ResponseWriter
 	status      int
 	written     uint64
 	wroteHeader bool
 }
 
-func (o *resp) Write(p []byte) (bytes int, err error) {
+func (o *clientWriter) Write(p []byte) (bytes int, err error) {
 	if !o.wroteHeader {
 		o.WriteHeader(http.StatusOK)
 	}
@@ -18,7 +18,7 @@ func (o *resp) Write(p []byte) (bytes int, err error) {
 	return
 }
 
-func (o *resp) WriteHeader(code int) {
+func (o *clientWriter) WriteHeader(code int) {
 	o.ResponseWriter.WriteHeader(code)
 	if o.wroteHeader {
 		return

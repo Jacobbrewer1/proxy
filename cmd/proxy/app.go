@@ -10,21 +10,26 @@ import (
 type App struct {
 	logger *slog.Logger
 	cfg    *config.Config
-	server *http.Server
-	proxy  *proxyServer
+
+	proxy   *proxyServer
+	servers *servers
 }
 
 func (a *App) start() error {
-	a.logger.Info(fmt.Sprintf("listening at %s", a.server.Addr))
 	http.Handle("/", a.proxy)
-	return a.server.ListenAndServe()
+	return a.listenHttps()
 }
 
-func newApp(logger *slog.Logger, server *http.Server, proxyServer *proxyServer, cfg *config.Config) *App {
+func (a *App) listenHttps() error {
+	a.logger.Info(fmt.Sprintf("listening https at %s", a.servers.secureServer.Addr))
+	return a.servers.secureServer.ListenAndServeTLS(a.cfg.CertificatePath, a.cfg.PrivateKeyPath)
+}
+
+func newApp(logger *slog.Logger, servers *servers, proxyServer *proxyServer, cfg *config.Config) *App {
 	return &App{
-		logger: logger,
-		cfg:    cfg,
-		server: server,
-		proxy:  proxyServer,
+		logger:  logger,
+		cfg:     cfg,
+		servers: servers,
+		proxy:   proxyServer,
 	}
 }

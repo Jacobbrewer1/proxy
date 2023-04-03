@@ -1,0 +1,9 @@
+---
+name: proxy_config
+
+listening_port_http: '8080'
+listening_port_https: '8443'
+redirect: "http://localhost:3000"
+run_https: true
+certificate_path: "/opt/certs/certificate.pem"
+private_key_path: "/opt/certs/privatekey.pem"

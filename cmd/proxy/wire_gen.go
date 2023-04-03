@@ -21,10 +21,13 @@ func InitializeApp() (*App, error) {
 	if err != nil {
 		return nil, err
 	}
-	configConfig := config.NewConfig(loggingConfig)
-	server := newHttpServer(logger, configConfig)
+	configConfig, err := config.NewConfig(loggingConfig)
+	if err != nil {
+		return nil, err
+	}
+	mainServers := newServers(logger, configConfig)
 	mainProxyServer := newProxyServer(logger, configConfig)
-	app := newApp(logger, server, mainProxyServer, configConfig)
+	app := newApp(logger, mainServers, mainProxyServer, configConfig)
 	return app, nil
 }
 

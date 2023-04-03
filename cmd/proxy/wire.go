@@ -17,7 +17,7 @@ func InitializeApp() (*App, error) {
 		logging.CommonLogger,
 		config.NewConfig,
 		newProxyServer,
-		newHttpServer,
+		newServers,
 		newApp,
 	)
 	return &App{}, nil

@@ -33,9 +33,32 @@ func newProxyServer(logger *slog.Logger, cfg *config.Config) *proxyServer {
 	}
 }
 
+type servers struct {
+	secureServer *http.Server
+	httpServer   *http.Server
+}
+
+func newServers(logger *slog.Logger, cfg *config.Config) *servers {
+	return &servers{
+		httpServer:   newHttpServer(logger, cfg),
+		secureServer: newHttpSecureServer(logger, cfg),
+	}
+}
+
 func newHttpServer(logger *slog.Logger, cfg *config.Config) *http.Server {
 	return &http.Server{
-		Addr:         fmt.Sprintf(":%s", cfg.ListeningPort),
+		Addr:         fmt.Sprintf(":%s", cfg.ListeningPortHttp),
+		Handler:      middleware(http.DefaultServeMux, logger, cfg),
+		ReadTimeout:  30 * time.Second,
+		WriteTimeout: 60 * time.Second,
+		IdleTimeout:  120 * time.Second,
+		ErrorLog:     log.Default(),
+	}
+}
+
+func newHttpSecureServer(logger *slog.Logger, cfg *config.Config) *http.Server {
+	return &http.Server{
+		Addr:         fmt.Sprintf(":%s", cfg.ListeningPortHttps),
 		Handler:      middleware(http.DefaultServeMux, logger, cfg),
 		ReadTimeout:  30 * time.Second,
 		WriteTimeout: 60 * time.Second,
@@ -46,23 +69,8 @@ func newHttpServer(logger *slog.Logger, cfg *config.Config) *http.Server {
 
 func middleware(_ http.Handler, logger *slog.Logger, cfg *config.Config) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		ob := &resp{
-			ResponseWriter: w,
-		}
-		s := newProxyServer(logger, cfg)
-		s.ServeHTTP(ob, r)
-		logger.Debug("proxy result",
-			slog.Group("details",
-				slog.String("requestedFrom", r.RemoteAddr),
-				slog.String("host", r.Host),
-				slog.String("method", r.Method),
-				slog.String("path", r.URL.Path),
-				slog.String("protocol", r.Proto),
-				slog.Int("responseStatus", ob.status),
-				slog.Uint64("bytesWritten", ob.written),
-				slog.String("referer", r.Referer()),
-				slog.String("agent", r.UserAgent()),
-			),
-		)
+		writer := &clientWriter{ResponseWriter: w}
+		p := newProxyServer(logger, cfg)
+		p.proxy.ServeHTTP(writer, r)
 	})
 }
