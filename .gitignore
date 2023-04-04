@@ -20,3 +20,6 @@
 go.sum
 
 .idea/
+
+# Certificate/key files
+*.pem

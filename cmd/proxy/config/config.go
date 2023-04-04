@@ -1,6 +1,8 @@
 package config
 
 import (
+	"github.com/jacobbrewer1/reverse-proxy/pkg/dataacess"
+	"github.com/jacobbrewer1/reverse-proxy/pkg/dataacess/connection"
 	"github.com/jacobbrewer1/reverse-proxy/pkg/logging"
 )
 
@@ -12,11 +14,18 @@ const (
 type Config struct {
 	ListeningPortHttp  string `yaml:"listening_port_http"`
 	ListeningPortHttps string `yaml:"listening_port_https"`
-	Redirect           string `yaml:"redirect"`
-	runHttps           bool   `yaml:"run_https"`
+	MonitoringPort     string `yaml:"monitoring_port"`
 	CertificatePath    string `yaml:"certificate_path"`
 	PrivateKeyPath     string `yaml:"private_key_path"`
-	LoggingConfig      *logging.Config
+
+	RedisDb       *connection.RedisDb `yaml:"redis_db"`
+	LoggingConfig *logging.Config
+}
+
+func (c *Config) setConnections() {
+	c.RedisDb.Client(0).Ping()
+
+	dataacess.Connections.SetRedisDb(c.RedisDb)
 }
 
 func NewConfig(loggingConfig *logging.Config) (*Config, error) {
@@ -25,5 +34,7 @@ func NewConfig(loggingConfig *logging.Config) (*Config, error) {
 		return nil, err
 	}
 	cfg.LoggingConfig = loggingConfig
+
+	cfg.setConnections()
 	return cfg, nil
 }
