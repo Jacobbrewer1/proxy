@@ -24,6 +24,9 @@ jobs:
         go mod tidy
         cd ./cmd
 
+    - name: Vet
+      run: go vet ./...
+
     - name: Build
       run: go build -v ./...
 
