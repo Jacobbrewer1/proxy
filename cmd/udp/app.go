@@ -19,14 +19,10 @@ func (a *App) start() {
 		return
 	}
 
-	var targetAddr []*net.UDPAddr
-	for _, v := range opts.Target {
-		addr, err := net.ResolveUDPAddr("udp", v)
-		if err != nil {
-			a.logger.Error(fmt.Sprintf("Could not resolve target address: %s", v), slog.String("err", err.Error()))
-			return
-		}
-		targetAddr = append(targetAddr, addr)
+	targetAddr, err := net.ResolveUDPAddr("udp", opts.Target)
+	if err != nil {
+		a.logger.Error(fmt.Sprintf("Could not resolve target address: %s", opts.Target), slog.String("err", err.Error()))
+		return
 	}
 
 	sourceConn, err := net.ListenUDP("udp", sourceAddr)
@@ -34,27 +30,22 @@ func (a *App) start() {
 		a.logger.Error(fmt.Sprintf("Could not listen on address: %s", opts.Source), slog.String("err", err.Error()))
 		return
 	}
-
 	defer func() {
 		if err := sourceConn.Close(); err != nil {
 			a.logger.Error("Error closing source connection", slog.String("err", err.Error()))
 		}
 	}()
 
-	var targetConn []*net.UDPConn
-	for _, v := range targetAddr {
-		conn, err := net.DialUDP("udp", nil, v)
-		if err != nil {
-			a.logger.Error(fmt.Sprintf("Could not connect to target address: %s", v), slog.String("err", err.Error()))
-			return
-		}
-		defer func(c *net.UDPConn) {
-			if err := c.Close(); err != nil {
-				a.logger.Error("Error closing target connection", slog.String("err", err.Error()))
-			}
-		}(conn)
-		targetConn = append(targetConn, conn)
+	targetConn, err := net.DialUDP("udp", nil, targetAddr)
+	if err != nil {
+		a.logger.Error(fmt.Sprintf("Could not connect to target address: %s", targetAddr), slog.String("err", err.Error()))
+		return
 	}
+	defer func(c *net.UDPConn) {
+		if err := c.Close(); err != nil {
+			a.logger.Error("Error closing target connection", slog.String("err", err.Error()))
+		}
+	}(targetConn)
 
 	a.logger.Info(fmt.Sprintf("Starting udpproxy, Source at %v, Target at %v...", opts.Source, opts.Target))
 
@@ -70,10 +61,8 @@ func (a *App) start() {
 			slog.Int("num_of_bytes", n),
 			slog.String("content", string(b)),
 		)
-		for _, v := range targetConn {
-			if _, err := v.Write(b[0:n]); err != nil {
-				a.logger.Error("Could not forward packet", slog.String("err", err.Error()))
-			}
+		if _, err := targetConn.Write(b[0:n]); err != nil {
+			a.logger.Error("Could not forward packet", slog.String("err", err.Error()))
 		}
 	}
 }
