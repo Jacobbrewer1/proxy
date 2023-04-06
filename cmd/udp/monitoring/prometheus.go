@@ -13,7 +13,7 @@ var (
 			Name: "udpproxy_http_total_requests",
 			Help: "Total number of events received",
 		},
-		[]string{"udpproxy"},
+		[]string{"client"},
 	)
 
 	RequestDuration = prometheus.NewHistogramVec(
@@ -21,7 +21,7 @@ var (
 			Name: "udpproxy_http_request_duration",
 			Help: "Duration of proxy requests",
 		},
-		[]string{"udpproxy"},
+		[]string{"client"},
 	)
 
 	TotalSystemErrors = prometheus.NewCounterVec(
@@ -29,7 +29,7 @@ var (
 			Name: "udpproxy_system_errors",
 			Help: "Number of system errors",
 		},
-		[]string{"udpproxy"},
+		[]string{"client"},
 	)
 
 	RedisLatency = prometheus.NewHistogramVec(

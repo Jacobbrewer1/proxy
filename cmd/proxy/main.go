@@ -9,7 +9,7 @@ import (
 )
 
 func flags() error {
-	configLocation := flag.String("config", "", "The location of the config file")
+	configLocation := flag.String("config", "", "Location of the config file")
 
 	flag.Parse()
 

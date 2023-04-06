@@ -24,16 +24,16 @@ type proxyServer struct {
 func (p *proxyServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	redis := dataacess.NewRedisDalWithContext(r.Context(), 0)
 	if redis == nil {
-		p.logger.Error("redis client came back nil")
+		p.logger.Error("Redis client came back nil")
 	}
 	dbUrl, err := redis.GetValue("test")
 	if err != nil {
-		p.logger.Error("error fetching url from redis", slog.String("err", err.Error()))
+		p.logger.Error("Error fetching url from redis", slog.String("err", err.Error()))
 		return
 	}
 	redirect, err := url.Parse(dbUrl)
 	if err != nil {
-		p.logger.Error("error parsing url", slog.String("err", err.Error()))
+		p.logger.Error("Error parsing url", slog.String("err", err.Error()))
 		return
 	}
 	prox := httputil.NewSingleHostReverseProxy(redirect)
@@ -102,7 +102,7 @@ func httpRedirect(logger *slog.Logger, cfg *config.Config) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		host, _, err := net.SplitHostPort(r.Host)
 		if err != nil {
-			logger.Error("error splitting port from host", slog.String("err", err.Error()))
+			logger.Error("Error splitting port from host", slog.String("err", err.Error()))
 		}
 		u := r.URL
 		u.Host = net.JoinHostPort(host, cfg.ListeningPortHttps)

@@ -25,7 +25,8 @@ func InitializeApp() (*App, error) {
 	if err != nil {
 		return nil, err
 	}
-	app := NewApp(logger, configConfig)
+	server := newMonitoringServer(configConfig)
+	app := NewApp(logger, configConfig, server)
 	return app, nil
 }
 

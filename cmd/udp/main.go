@@ -3,6 +3,8 @@ package main
 import (
 	"errors"
 	"flag"
+	"github.com/jacobbrewer1/reverse-proxy/cmd/udp/monitoring"
+	dbMonitoring "github.com/jacobbrewer1/reverse-proxy/pkg/dataacess/monitoring"
 	"github.com/jacobbrewer1/reverse-proxy/pkg/filehandler"
 	"log"
 	"os"
@@ -26,11 +28,11 @@ func main() {
 		log.Println(err)
 		os.Exit(2)
 	}
-
 	a, err := InitializeApp()
 	if err != nil {
 		log.Println(err)
 		os.Exit(1)
 	}
+	dbMonitoring.RedisLatency = monitoring.RedisLatency
 	a.start()
 }

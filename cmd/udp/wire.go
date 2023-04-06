@@ -16,6 +16,7 @@ func InitializeApp() (*App, error) {
 		logging.NewConfig,
 		logging.CommonLogger,
 		config.NewConfig,
+		newMonitoringServer,
 		NewApp,
 	)
 	return &App{}, nil
