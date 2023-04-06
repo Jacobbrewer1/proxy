@@ -45,7 +45,7 @@ func (a *App) start() {
 	listeningPort := fmt.Sprintf(":%s", a.cfg.ListeningPort)
 	target, err := a.getTargets()
 	if err != nil {
-		a.logger.Error("error retrieving targets", slog.String("err", err.Error()))
+		a.logger.Error("Error retrieving targets", slog.String("err", err.Error()))
 		return
 	}
 
@@ -83,8 +83,8 @@ func (a *App) start() {
 		}
 	}(targetConn)
 
-	a.logger.Info(fmt.Sprintf("Starting %s, source at %v, target at %v...", config.AppName, listeningPort, target))
-
+	a.logger.Info(fmt.Sprintf("Starting %s, source at %v, target at %v...",
+		config.AppName, sourceConn.LocalAddr(), targetConn.RemoteAddr()))
 	for {
 		b := make([]byte, defaultBufferSize)
 		n, addr, err := sourceConn.ReadFromUDP(b)
