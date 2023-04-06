@@ -1,1 +1,11 @@
+---
+name: proxy_config
 
+listening_port_http: '8080'
+listening_port_https: '8443'
+monitoring_port: '45454'
+certificate_path: "./certs/certificate.pem"
+private_key_path: "./certs/privatekey.pem"
+redis_db:
+  host: localhost
+  port: 6379
