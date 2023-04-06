@@ -3,6 +3,7 @@ package config
 import (
 	"github.com/jacobbrewer1/reverse-proxy/pkg/dataacess"
 	"github.com/jacobbrewer1/reverse-proxy/pkg/dataacess/connection"
+	"github.com/jacobbrewer1/reverse-proxy/pkg/filehandler"
 	"github.com/jacobbrewer1/reverse-proxy/pkg/logging"
 )
 
@@ -29,12 +30,11 @@ func (c *Config) setConnections() {
 }
 
 func NewConfig(loggingConfig *logging.Config) (*Config, error) {
-	cfg, err := createConfig()
-	if err != nil {
+	var cfg Config
+	if err := filehandler.CreateConfigYaml[Config](&cfg); err != nil {
 		return nil, err
 	}
 	cfg.LoggingConfig = loggingConfig
-
 	cfg.setConnections()
-	return cfg, nil
+	return &cfg, nil
 }

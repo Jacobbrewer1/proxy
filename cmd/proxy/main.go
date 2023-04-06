@@ -3,7 +3,7 @@ package main
 import (
 	"errors"
 	"flag"
-	"github.com/jacobbrewer1/reverse-proxy/cmd/proxy/config"
+	"github.com/jacobbrewer1/reverse-proxy/pkg/filehandler"
 	"log"
 	"os"
 )
@@ -16,7 +16,7 @@ func flags() error {
 	if *configLocation == "" {
 		return errors.New("no config location provided")
 	} else {
-		config.Location = *configLocation
+		filehandler.Location = *configLocation
 	}
 	return nil
 }

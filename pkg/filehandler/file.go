@@ -1,4 +1,4 @@
-package config
+package filehandler
 
 import (
 	"fmt"
@@ -9,21 +9,19 @@ import (
 
 var Location string
 
-func createConfig() (*Config, error) {
+func CreateConfigYaml[T any](cfg *T) error {
 	path, ok := findFile()
 	if !ok {
-		return nil, fmt.Errorf("no config found at location %s", Location)
+		return fmt.Errorf("no config found at location %s", Location)
 	}
 	c, err := os.ReadFile(path)
 	if err != nil {
-		return nil, fmt.Errorf("error reading file: %s", err)
+		return fmt.Errorf("error reading file: %s", err)
 	}
-
-	var cfg Config
 	if err := yaml.Unmarshal(c, &cfg); err != nil {
-		return nil, fmt.Errorf("error unmarshalling config: %s", err)
+		return fmt.Errorf("error unmarshalling config: %s", err)
 	}
-	return &cfg, nil
+	return nil
 }
 
 func findFile() (string, bool) {
