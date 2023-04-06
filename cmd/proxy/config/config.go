@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	AppName     = `proxy`
+	AppName     = `reverse_proxy`
 	LogFilePath = `./`
 )
 

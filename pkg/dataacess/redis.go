@@ -8,18 +8,18 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 )
 
-type IRedirectDal interface {
-	GetRedirect(key string) (string, error)
+type IRedisDal interface {
+	GetValue(key string) (string, error)
 }
 
-type redirectDal struct {
+type redisDal struct {
 	ctx    context.Context
 	client *redis.Client
 
 	collection int
 }
 
-func (r *redirectDal) GetRedirect(key string) (string, error) {
+func (r *redisDal) GetValue(key string) (string, error) {
 	t := prometheus.NewTimer(dbMonitoring.RedisLatency.WithLabelValues(fmt.Sprintf("%d", r.collection)))
 	defer t.ObserveDuration()
 
@@ -31,8 +31,8 @@ func (r *redirectDal) GetRedirect(key string) (string, error) {
 	return data, nil
 }
 
-func NewRedirectDal(ctx context.Context, collection int) IRedirectDal {
-	return &redirectDal{
+func NewRedisDal(ctx context.Context, collection int) IRedisDal {
+	return &redisDal{
 		ctx:        ctx,
 		client:     Connections.RedisDb().Client(collection),
 		collection: collection,

@@ -22,11 +22,11 @@ type proxyServer struct {
 }
 
 func (p *proxyServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	redis := dataacess.NewRedirectDal(r.Context(), 0)
+	redis := dataacess.NewRedisDal(r.Context(), 0)
 	if redis == nil {
 		p.logger.Error("redis client came back nil")
 	}
-	dbUrl, err := redis.GetRedirect("test")
+	dbUrl, err := redis.GetValue("test")
 	if err != nil {
 		p.logger.Error("error fetching url from redis", slog.String("err", err.Error()))
 		return
