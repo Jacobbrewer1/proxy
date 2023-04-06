@@ -20,18 +20,18 @@ type redisDal struct {
 }
 
 func (r *redisDal) GetValue(key string) (string, error) {
-	t := prometheus.NewTimer(dbMonitoring.RedisLatency.WithLabelValues(fmt.Sprintf("%d", r.collection)))
-	defer t.ObserveDuration()
-
-	data, err := r.client.WithContext(r.ctx).Get(key).Result()
-	if err != nil {
-		return "", err
+	if dbMonitoring.RedisLatency != nil {
+		t := prometheus.NewTimer(dbMonitoring.RedisLatency.WithLabelValues(fmt.Sprintf("%d", r.collection)))
+		defer t.ObserveDuration()
 	}
-
-	return data, nil
+	return r.client.WithContext(r.ctx).Get(key).Result()
 }
 
-func NewRedisDal(ctx context.Context, collection int) IRedisDal {
+func NewRedisDal(collection int) IRedisDal {
+	return NewRedisDalWithContext(context.Background(), collection)
+}
+
+func NewRedisDalWithContext(ctx context.Context, collection int) IRedisDal {
 	return &redisDal{
 		ctx:        ctx,
 		client:     Connections.RedisDb().Client(collection),

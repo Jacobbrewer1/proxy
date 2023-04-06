@@ -22,7 +22,7 @@ type proxyServer struct {
 }
 
 func (p *proxyServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	redis := dataacess.NewRedisDal(r.Context(), 0)
+	redis := dataacess.NewRedisDalWithContext(r.Context(), 0)
 	if redis == nil {
 		p.logger.Error("redis client came back nil")
 	}
