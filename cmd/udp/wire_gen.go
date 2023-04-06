@@ -7,6 +7,7 @@
 package main
 
 import (
+	"github.com/jacobbrewer1/reverse-proxy/cmd/udp/config"
 	"github.com/jacobbrewer1/reverse-proxy/pkg/logging"
 )
 
@@ -15,16 +16,20 @@ import (
 func InitializeApp() (*App, error) {
 	loggerName := _wireLoggerNameValue
 	loggerPath := _wireLoggerPathValue
-	config := logging.NewConfig(loggerName, loggerPath)
-	logger, err := logging.CommonLogger(config)
+	loggingConfig := logging.NewConfig(loggerName, loggerPath)
+	logger, err := logging.CommonLogger(loggingConfig)
 	if err != nil {
 		return nil, err
 	}
-	app := NewApp(logger)
+	configConfig, err := config.NewConfig(loggingConfig)
+	if err != nil {
+		return nil, err
+	}
+	app := NewApp(logger, configConfig)
 	return app, nil
 }
 
 var (
-	_wireLoggerNameValue = logging.LoggerName("test")
-	_wireLoggerPathValue = logging.LoggerPath("./")
+	_wireLoggerNameValue = logging.LoggerName(config.AppName)
+	_wireLoggerPathValue = logging.LoggerPath(config.LogFilePath)
 )

@@ -1,18 +1,32 @@
 package main
 
 import (
+	"errors"
+	"flag"
+	"github.com/jacobbrewer1/reverse-proxy/pkg/filehandler"
 	"log"
 	"os"
 )
 
-var opts struct {
-	Source string `long:"source" default:":2203" description:"Source port to listen on"`
-	Target string `long:"target" description:"Target address to forward to"`
-	Quiet  bool   `long:"quiet" description:"whether to print logging info or not"`
-	Buffer int    `long:"buffer" default:"10240" description:"max buffer size for the socket io"`
+func flags() error {
+	configLocation := flag.String("config", "", "The location of the config file")
+
+	flag.Parse()
+
+	if *configLocation == "" {
+		return errors.New("no config location provided")
+	} else {
+		filehandler.Location = *configLocation
+	}
+	return nil
 }
 
 func main() {
+	if err := flags(); err != nil {
+		log.Println(err)
+		os.Exit(2)
+	}
+
 	a, err := InitializeApp()
 	if err != nil {
 		log.Println(err)

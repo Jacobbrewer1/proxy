@@ -1,0 +1,8 @@
+---
+name: udp_proxy_config
+
+listening_port: '2203'
+monitoring_port: '45455'
+redis_db:
+  host: localhost
+  port: 6379
