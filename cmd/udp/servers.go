@@ -10,6 +10,9 @@ import (
 )
 
 func (a *App) startMonitoring() error {
+	if err := monitoring.Register(); err != nil {
+		return err
+	}
 	a.logger.Info(fmt.Sprintf("Listening for prometheus at %s", a.monitoringServer.Addr))
 	return a.monitoringServer.ListenAndServe()
 }
