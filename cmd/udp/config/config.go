@@ -8,16 +8,13 @@ import (
 )
 
 const (
-	AppName     = `reverse_proxy`
+	AppName     = `udp_proxy`
 	LogFilePath = `./`
 )
 
 type Config struct {
-	ListeningPortHttp  string `yaml:"listening_port_http"`
-	ListeningPortHttps string `yaml:"listening_port_https"`
-	MonitoringPort     string `yaml:"monitoring_port"`
-	CertificatePath    string `yaml:"certificate_path"`
-	PrivateKeyPath     string `yaml:"private_key_path"`
+	ListeningPort  string `yaml:"listening_port"`
+	MonitoringPort string `yaml:"monitoring_port"`
 
 	RedisDb       *connection.RedisDb `yaml:"redis_db"`
 	LoggingConfig *logging.Config

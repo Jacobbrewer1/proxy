@@ -24,29 +24,29 @@ func (a *App) start() error {
 	http.Handle("/", a.proxy)
 	go func() {
 		if err := a.listenHttp(); err != nil {
-			a.logger.Error("error listening on http", slog.String("err", err.Error()))
+			a.logger.Error("Error listening on http", slog.String("err", err.Error()))
 		}
 	}()
 	go func() {
 		if err := a.listenMonitor(); err != nil {
-			a.logger.Error("error listening for monitoring", slog.String("err", err.Error()))
+			a.logger.Error("Error listening for monitoring", slog.String("err", err.Error()))
 		}
 	}()
 	return a.listenHttps()
 }
 
 func (a *App) listenHttps() error {
-	a.logger.Info(fmt.Sprintf("listening https at %s", a.servers.secureServer.Addr))
+	a.logger.Info(fmt.Sprintf("Listening https at %s", a.servers.secureServer.Addr))
 	return a.servers.secureServer.ListenAndServeTLS(a.cfg.CertificatePath, a.cfg.PrivateKeyPath)
 }
 
 func (a *App) listenHttp() error {
-	a.logger.Info(fmt.Sprintf("listening http at %s", a.servers.httpServer.Addr))
+	a.logger.Info(fmt.Sprintf("Listening http at %s", a.servers.httpServer.Addr))
 	return a.servers.httpServer.ListenAndServe()
 }
 
 func (a *App) listenMonitor() error {
-	a.logger.Info(fmt.Sprintf("listening for prometheus at %s", a.servers.monitoringServer.Addr))
+	a.logger.Info(fmt.Sprintf("Listening for prometheus at %s", a.servers.monitoringServer.Addr))
 	return a.servers.monitoringServer.ListenAndServe()
 }
 
