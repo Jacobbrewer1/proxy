@@ -88,10 +88,12 @@ func (a *App) start() {
 		}
 	}(targetConn)
 
-	if err := a.startMonitoring(); err != nil {
-		a.logger.Error("Error starting monitoring", slog.String("err", err.Error()))
-		return
-	}
+	go func() {
+		if err := a.startMonitoring(); err != nil {
+			a.logger.Error("Error starting monitoring", slog.String("err", err.Error()))
+			return
+		}
+	}()
 
 	a.logger.Info(fmt.Sprintf("Starting %s, source at %v, target at %v...",
 		config.AppName, sourceConn.LocalAddr(), targetConn.RemoteAddr()))
