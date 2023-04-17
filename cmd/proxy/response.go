@@ -10,19 +10,19 @@ type clientWriter struct {
 }
 
 func (c *clientWriter) Write(p []byte) (bytes int, err error) {
-	if !o.isHeaderWritten {
-		o.WriteHeader(http.StatusOK)
+	if !c.isHeaderWritten {
+		c.WriteHeader(http.StatusOK)
 	}
-	bytes, err = o.ResponseWriter.Write(p)
-	o.bytesWritten += uint64(bytes)
+	bytes, err = c.ResponseWriter.Write(p)
+	c.bytesWritten += uint64(bytes)
 	return
 }
 
 func (c *clientWriter) WriteHeader(code int) {
-	o.ResponseWriter.WriteHeader(code)
-	if o.isHeaderWritten {
+	c.ResponseWriter.WriteHeader(code)
+	if c.isHeaderWritten {
 		return
 	}
-	o.isHeaderWritten = true
-	o.statusCode = code
+	c.isHeaderWritten = true
+	c.statusCode = code
 }
