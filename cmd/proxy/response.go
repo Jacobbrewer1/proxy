@@ -9,7 +9,7 @@ type clientWriter struct {
 	isHeaderWritten bool
 }
 
-func (o *clientWriter) Write(p []byte) (bytes int, err error) {
+func (c *clientWriter) Write(p []byte) (bytes int, err error) {
 	if !o.isHeaderWritten {
 		o.WriteHeader(http.StatusOK)
 	}
@@ -18,7 +18,7 @@ func (o *clientWriter) Write(p []byte) (bytes int, err error) {
 	return
 }
 
-func (o *clientWriter) WriteHeader(code int) {
+func (c *clientWriter) WriteHeader(code int) {
 	o.ResponseWriter.WriteHeader(code)
 	if o.isHeaderWritten {
 		return
