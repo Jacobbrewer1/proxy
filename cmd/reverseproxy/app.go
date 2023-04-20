@@ -20,7 +20,6 @@ func (a *App) start() error {
 	if err := monitoring.Register(); err != nil {
 		return err
 	}
-
 	http.Handle("/", a.proxy)
 	go func() {
 		if err := a.listenHttp(); err != nil {
