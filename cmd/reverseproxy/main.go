@@ -25,7 +25,6 @@ func main() {
 	if err := flags(); err != nil {
 		log.Fatalln(err)
 	}
-
 	a, err := InitializeApp()
 	if err != nil {
 		log.Fatalln(err)

@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/go-redis/redis"
-	"github.com/jacobbrewer1/reverse-proxy/cmd/proxy/monitoring"
+	"github.com/jacobbrewer1/reverse-proxy/cmd/reverseproxy/monitoring"
 	"github.com/jacobbrewer1/reverse-proxy/cmd/udp/config"
 	"github.com/jacobbrewer1/reverse-proxy/pkg/dataacess"
 	"github.com/prometheus/client_golang/prometheus"

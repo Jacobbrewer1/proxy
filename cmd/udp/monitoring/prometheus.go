@@ -19,7 +19,7 @@ var (
 	RequestDuration = prometheus.NewHistogramVec(
 		prometheus.HistogramOpts{
 			Name: "udpproxy_http_request_duration",
-			Help: "Duration of proxy requests",
+			Help: "Duration of reverseproxy requests",
 		},
 		[]string{"client"},
 	)
