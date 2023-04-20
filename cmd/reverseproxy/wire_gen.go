@@ -7,7 +7,7 @@
 package main
 
 import (
-	"github.com/jacobbrewer1/reverse-proxy/cmd/proxy/config"
+	"github.com/jacobbrewer1/reverse-proxy/cmd/reverseproxy/config"
 	"github.com/jacobbrewer1/reverse-proxy/pkg/logging"
 )
 

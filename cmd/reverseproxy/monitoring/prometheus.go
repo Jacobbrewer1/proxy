@@ -13,7 +13,7 @@ var (
 			Name: "proxy_http_total_requests",
 			Help: "Total number of events received",
 		},
-		[]string{"proxy"},
+		[]string{"reverseproxy"},
 	)
 
 	ResponseStatus = prometheus.NewCounterVec(
@@ -21,15 +21,15 @@ var (
 			Name: "proxy_http_response_status",
 			Help: "Status of HTTP responses",
 		},
-		[]string{"proxy", "status_code"},
+		[]string{"reverseproxy", "status_code"},
 	)
 
 	RequestDuration = prometheus.NewHistogramVec(
 		prometheus.HistogramOpts{
 			Name: "proxy_http_request_duration",
-			Help: "Duration of proxy requests",
+			Help: "Duration of reverseproxy requests",
 		},
-		[]string{"proxy"},
+		[]string{"reverseproxy"},
 	)
 
 	TotalSystemErrors = prometheus.NewCounterVec(
@@ -37,7 +37,7 @@ var (
 			Name: "proxy_system_errors",
 			Help: "Number of system errors",
 		},
-		[]string{"proxy"},
+		[]string{"reverseproxy"},
 	)
 
 	RedisLatency = prometheus.NewHistogramVec(

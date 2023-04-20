@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	"github.com/jacobbrewer1/reverse-proxy/cmd/proxy/config"
-	"github.com/jacobbrewer1/reverse-proxy/cmd/proxy/monitoring"
+	"github.com/jacobbrewer1/reverse-proxy/cmd/reverseproxy/config"
+	"github.com/jacobbrewer1/reverse-proxy/cmd/reverseproxy/monitoring"
 	"golang.org/x/exp/slog"
 	"net/http"
 )
