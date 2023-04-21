@@ -8,7 +8,27 @@ on:
     branches: [ "main" ]
 
 jobs:
-  code-quality:
+  golang-ci-lint:
+    name: Golangci-lint
+    runs-on: ubuntu-latest
+    steps:
+    # Sets up golang
+    - uses: actions/setup-go@v4
+      with:
+        go-version: '1.20.3'
+
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: golangci-lint
+      uses: golangci/golangci-lint-action@v3
+      with:
+        version: v1.52.2
+        only-new-issues: true
+        verbose: true
+        
+  code-approval:
+    name: "Code Approval"
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repository
