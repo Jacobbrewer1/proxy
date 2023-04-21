@@ -54,7 +54,7 @@ jobs:
         run: |
           cd ./cmd/reverseproxy
           go mod tidy
-          go build -o reverseproxy
+          go build `CGO_ENABLED=0` -o reverseproxy
 
       - name: Docker build
         run: |

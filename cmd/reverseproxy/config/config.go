@@ -33,8 +33,8 @@ func NewConfig(loggingConfig *logging.Config) (*Config, error) {
 		ListeningPortHttp:  "80",
 		ListeningPortHttps: "443",
 		MonitoringPort:     "45454",
-		CertificatePath:    "./certs/certificate.pem",
-		PrivateKeyPath:     "./certs/privatekey.pem",
+		CertificatePath:    "./certs/fullchain1.pem",
+		PrivateKeyPath:     "./certs/privkey1.pem",
 		RedisDb: &connection.RedisDb{
 			Host: "localhost",
 			Port: "6379",
