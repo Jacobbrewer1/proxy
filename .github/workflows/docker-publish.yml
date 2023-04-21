@@ -57,7 +57,7 @@ jobs:
           go build -o reverseproxy
 
       - name: Docker build
-        run: docker build . -t ${{ env.REGISTRY }}/jacobbrewer1/{{ env.IMAGE_NAME }}:latest
+        run: docker build . -t ${{ env.REGISTRY }}/jacobbrewer1/proxy:latest
 
       - name: Docker push
-        run: docker push ${{ env.REGISTRY }}/jacobbrewer1/{{ env.IMAGE_NAME }}:latest
+        run: docker push ${{ env.REGISTRY }}/jacobbrewer1/proxy:latest
