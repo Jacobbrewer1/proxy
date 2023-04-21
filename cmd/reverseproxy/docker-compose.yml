@@ -1,0 +1,21 @@
+---
+version: '0.1'
+name: proxies
+
+services:
+  reverse_proxy:
+    container_name: reverse_proxy
+    image: ghcr.io/jacobbrewer1/reverseproxy:latest
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+      - "45454:45454"
+    networks:
+      - proxy_server
+    volumes:
+      - ./certs:/app/certs/
+networks:
+  proxy_server:
+    name: proxy_server
+    driver: bridge
