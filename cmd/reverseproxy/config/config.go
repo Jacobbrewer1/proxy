@@ -3,7 +3,6 @@ package config
 import (
 	"github.com/jacobbrewer1/reverse-proxy/pkg/dataacess"
 	"github.com/jacobbrewer1/reverse-proxy/pkg/dataacess/connection"
-	"github.com/jacobbrewer1/reverse-proxy/pkg/filehandler"
 	"github.com/jacobbrewer1/reverse-proxy/pkg/logging"
 )
 
@@ -30,11 +29,19 @@ func (c *Config) setConnections() {
 }
 
 func NewConfig(loggingConfig *logging.Config) (*Config, error) {
-	var cfg Config
-	if err := filehandler.CreateConfigYaml[Config](&cfg); err != nil {
-		return nil, err
+	cfg := &Config{
+		ListeningPortHttp:  "80",
+		ListeningPortHttps: "443",
+		MonitoringPort:     "45454",
+		CertificatePath:    "./certs/certificate.pem",
+		PrivateKeyPath:     "./certs/privatekey.pem",
+		RedisDb: &connection.RedisDb{
+			Host: "localhost",
+			Port: "6379",
+		},
+		LoggingConfig: nil,
 	}
 	cfg.LoggingConfig = loggingConfig
 	cfg.setConnections()
-	return &cfg, nil
+	return cfg, nil
 }
