@@ -24,7 +24,7 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-    - uses: actions/stale@v5
+    - uses: actions/stale@v8
       with:
         debug-only: false # Runs the stale workflow as dry-run
         repo-token: ${{ secrets.GITHUB_TOKEN }} # PAT for GitHub authentication
