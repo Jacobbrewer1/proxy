@@ -16,3 +16,15 @@ updates:
       include: "scope"
     labels:
       - "dependencies"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    reviewers:
+      - "Jacobbrewer1"
+    commit-message:
+      prefix: "feat"
+      include: "scope"
+    labels:
+      - "dependencies"
