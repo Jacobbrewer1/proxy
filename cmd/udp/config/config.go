@@ -21,7 +21,7 @@ type Config struct {
 }
 
 func (c *Config) setConnections() {
-	c.RedisDb.Client(0).Ping()
+	c.RedisDb.Conn(0).Ping()
 
 	dataacess.Connections.SetRedisDb(c.RedisDb)
 }

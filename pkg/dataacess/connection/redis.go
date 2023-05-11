@@ -1,8 +1,10 @@
 package connection
 
 import (
-	"fmt"
-	"github.com/go-redis/redis"
+	"context"
+	"github.com/gomodule/redigo/redis"
+	"net"
+	"time"
 )
 
 type RedisDb struct {
@@ -10,31 +12,32 @@ type RedisDb struct {
 	Port     string `json:"port,omitempty" yaml:"port,omitempty"`
 	Password string `json:"password,omitempty" yaml:"password,omitempty"`
 
-	// clients is a map of the database number to the client for that database
-	clients map[int]*redis.Client
+	// conns is a map of the database number to the client for that database
+	conns map[int]redis.Conn
 }
 
-func (r *RedisDb) Client(database int) *redis.Client {
-	if _, ok := r.clients[database]; !ok {
-		r.generateClient(database)
+func (r *RedisDb) Conn(database int) (redis.Conn, error) {
+	conn, ok := r.conns[database]
+	if !ok {
+		if err := r.generateClient(database); err != nil {
+			return nil, err
+		}
 	}
-
-	client, _ := r.clients[database]
-
-	client.Ping()
-	return client
+	return conn, nil
 }
 
-func (r *RedisDb) generateClient(database int) {
-	client := redis.NewClient(&redis.Options{
-		Addr:     fmt.Sprintf("%s:%s", r.Host, r.Port),
-		Password: r.Password,
-		DB:       database,
-	})
-
-	if r.clients == nil {
-		r.clients = make(map[int]*redis.Client, 16)
+func (r *RedisDb) generateClient(database int) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	addr := net.JoinHostPort(r.Host, r.Port)
+	client, err := redis.DialContext(ctx, "tcp", addr, redis.DialPassword(r.Password), redis.DialDatabase(database))
+	if err != nil {
+		return err
 	}
 
-	r.clients[database] = client
+	if r.conns == nil {
+		r.conns = make(map[int]redis.Conn, 16)
+	}
+	r.conns[database] = client
+	return nil
 }

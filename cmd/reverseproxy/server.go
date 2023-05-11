@@ -12,6 +12,7 @@ import (
 	"net/http"
 	"net/http/httputil"
 	"net/url"
+	"runtime/debug"
 	"time"
 )
 
@@ -26,7 +27,7 @@ func (p *proxyServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if redis == nil {
 		p.logger.Error("Redis client came back nil")
 	}
-	dbUrl, err := redis.GetValue("test")
+	dbUrl, err := redis.GetValue(redisKeyRedirect.String())
 	if err != nil {
 		p.logger.Error("Error fetching url from redis", slog.String("err", err.Error()))
 		return
@@ -74,6 +75,13 @@ func newHttpSecureServer(logger *slog.Logger, cfg *config.Config) *http.Server {
 
 func middleware(_ http.Handler, logger *slog.Logger, cfg *config.Config) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		defer func() {
+			if rec := recover(); rec != nil {
+				logger.Error("Recovered from panic", slog.String("err", fmt.Sprintf("%v", rec)), slog.String("stack", string(debug.Stack())))
+				http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+			}
+		}()
+
 		t := prometheus.NewTimer(monitoring.RequestDuration.WithLabelValues(r.Host))
 		defer t.ObserveDuration()
 

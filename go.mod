@@ -4,6 +4,7 @@ go 1.20
 
 require (
 	github.com/go-redis/redis v6.15.9+incompatible
+	github.com/gomodule/redigo v1.8.9
 	github.com/google/wire v0.5.0
 	github.com/prometheus/client_golang v1.15.1
 	golang.org/x/exp v0.0.0-20230321023759-10a507213a29

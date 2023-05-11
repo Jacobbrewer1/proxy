@@ -22,10 +22,12 @@ type Config struct {
 	LoggingConfig *logging.Config
 }
 
-func (c *Config) setConnections() {
-	c.RedisDb.Client(0).Ping()
-
+func (c *Config) setConnections() error {
+	if _, err := c.RedisDb.Conn(0); err != nil {
+		return err
+	}
 	dataacess.Connections.SetRedisDb(c.RedisDb)
+	return nil
 }
 
 func NewConfig(loggingConfig *logging.Config) (*Config, error) {
@@ -42,6 +44,8 @@ func NewConfig(loggingConfig *logging.Config) (*Config, error) {
 		LoggingConfig: nil,
 	}
 	cfg.LoggingConfig = loggingConfig
-	cfg.setConnections()
+	if err := cfg.setConnections(); err != nil {
+		return nil, err
+	}
 	return cfg, nil
 }
