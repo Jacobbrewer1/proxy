@@ -25,7 +25,8 @@ jobs:
       with:
         version: v1.52.2
         only-new-issues: true
-        verbose: true
+        args: --verbose
+
         
   code-approval:
     name: "Code Approval"
