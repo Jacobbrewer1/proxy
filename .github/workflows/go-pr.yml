@@ -7,10 +7,10 @@ on:
   merge_group:
   pull_request:
     branches: [ "main" ]
-  types:
-    - opened
-    - reopened
-    - synchronize # source branch updated
+    types:
+      - opened
+      - reopened
+      - synchronize # source branch updated
 
 concurrency:
   group: '${{ github.workflow }} @ ${{ github.event.pull_request.head.label || github.head_ref || github.ref }}'
