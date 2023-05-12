@@ -4,8 +4,17 @@
 name: go-pr
 
 on:
+  merge_group:
   pull_request:
     branches: [ "main" ]
+  types:
+    - opened
+    - reopened
+    - synchronize # source branch updated
+
+concurrency:
+  group: '${{ github.workflow }} @ ${{ github.event.pull_request.head.label || github.head_ref || github.ref }}'
+  cancel-in-progress: true
 
 jobs:
   golang-ci-lint:
@@ -27,7 +36,7 @@ jobs:
         only-new-issues: true
         args: --verbose
 
-        
+
   code-approval:
     name: "Code Approval"
     runs-on: ubuntu-latest
