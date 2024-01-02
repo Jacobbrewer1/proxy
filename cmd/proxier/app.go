@@ -2,13 +2,13 @@ package main
 
 import (
 	"fmt"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"log/slog"
 	"net/http"
 	"net/url"
 
 	"github.com/Jacobbrewer1/proxy/pkg/request"
 	"github.com/gorilla/mux"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 // The app is the main application.
