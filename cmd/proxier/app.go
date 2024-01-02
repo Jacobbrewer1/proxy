@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"log/slog"
 	"net/http"
 	"net/url"
@@ -42,6 +43,9 @@ func (a *app) run() error {
 }
 
 func (a *app) init() error {
+	a.r.HandleFunc(pathMetrics, a.middlewareHttp(promhttp.Handler().ServeHTTP, AuthOptionInternal)).Methods(http.MethodGet)
+	a.r.HandleFunc(pathHealth, a.middlewareHttp(healthHandler(), AuthOptionInternal)).Methods(http.MethodGet)
+
 	for _, r := range a.cfg.Resources {
 		dest, err := url.Parse(r.Redirect)
 		if err != nil {
