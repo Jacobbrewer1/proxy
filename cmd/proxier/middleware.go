@@ -117,7 +117,7 @@ func (a *app) middlewareHttp(handler Controller, authOption AuthOption) http.Han
 			}
 
 			slog.Debug("Valid basic auth credentials provided", slog.String("remote_addr", r.RemoteAddr),
-				slog.String("headers", fmt.Sprintf("%+v", r.Header)))
+				slog.String("url", r.URL.String()))
 		default:
 			slog.Error("Invalid auth option", slog.Int("auth_option", int(authOption)))
 			cw.WriteHeader(http.StatusInternalServerError)

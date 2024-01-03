@@ -47,7 +47,7 @@ func (a *app) init() error {
 	a.r.HandleFunc(pathHealth, a.middlewareHttp(healthHandler(), AuthOptionInternal)).Methods(http.MethodGet)
 
 	for _, r := range a.cfg.Resources {
-		dest, err := url.Parse(r.Redirect)
+		_, err := url.Parse(r.Redirect)
 		if err != nil {
 			return fmt.Errorf("error parsing destination url: %w", err)
 		}
@@ -62,7 +62,7 @@ func (a *app) init() error {
 			authOpt = AuthOptionRequired
 		}
 
-		ph := proxyHandler(dest, r.Endpoint)
+		ph := proxyHandler(r.Redirect)
 		a.r.HandleFunc(r.Endpoint, a.middlewareHttp(ph, authOpt)).Methods(r.Method)
 	}
 

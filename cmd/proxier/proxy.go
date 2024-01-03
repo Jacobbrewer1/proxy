@@ -5,21 +5,30 @@ import (
 	"net/http"
 	"net/http/httputil"
 	"net/url"
-	"strings"
+
+	"github.com/Jacobbrewer1/proxy/pkg/logging"
 )
 
-func proxyHandler(target *url.URL, endpoint string) func(http.ResponseWriter, *http.Request) {
+func proxyHandler(dest string) Controller {
 	return func(w http.ResponseWriter, r *http.Request) {
 		slog.Debug("Proxying request", slog.String("url", r.URL.String()))
 
-		// Update the headers to allow for SSL redirection
+		// Parse the target URL.
+		target, err := url.Parse(dest)
+		if err != nil {
+			slog.Error("Error parsing destination url", slog.String(logging.KeyError, err.Error()))
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+
+		r.Host = target.Host
 		r.URL.Host = target.Host
 		r.URL.Scheme = target.Scheme
 		r.Header.Set("X-Forwarded-Host", r.Header.Get("Host"))
-		r.Host = target.Host
 
-		path := r.URL.Path
-		r.URL.Path = strings.TrimLeft(path, endpoint) // Trim the endpoint from the path
+		// Prevent the proxy from adding a trailing slash.
+		r.URL.Path = target.Path
+		target.Path = ""
 
 		proxy := httputil.NewSingleHostReverseProxy(target)
 		// Note that ServeHttp is non-blocking and uses a go routine under the hood
