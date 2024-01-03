@@ -30,9 +30,6 @@ func proxyHandler(dest string) Controller {
 		r.URL.Path = target.Path
 		target.Path = ""
 
-		// Remove the X-Forwarded-For header.
-		r.Header.Del("X-Forwarded-For")
-
 		proxy := httputil.NewSingleHostReverseProxy(target)
 		// Note that ServeHttp is non-blocking and uses a go routine under the hood
 		proxy.ServeHTTP(w, r)
