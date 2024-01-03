@@ -116,6 +116,9 @@ func (a *app) middlewareHttp(handler Controller, authOption AuthOption) http.Han
 				return
 			}
 
+			// Attach the relevant proxy auth headers.
+			r.Header.Set("Proxy-Authentication-Info", "internal")
+
 			slog.Debug("Valid basic auth credentials provided", slog.String("remote_addr", r.RemoteAddr),
 				slog.String("url", r.URL.String()))
 		default:
