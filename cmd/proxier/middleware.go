@@ -107,8 +107,8 @@ func (a *app) middlewareHttp(handler Controller, authOption AuthOption) http.Han
 
 			// Compare the credentials.
 			if username != creds.Auth.Username || password != creds.Auth.Password {
-				slog.Debug("Invalid basic auth credentials provided", slog.String("remote_addr", r.RemoteAddr),
-					slog.String("headers", fmt.Sprintf("%+v", r.Header)))
+				slog.Warn("Invalid basic auth credentials provided", slog.String("remote_addr", r.RemoteAddr),
+					slog.String("username", username), slog.String("password", password))
 				cw.WriteHeader(http.StatusUnauthorized)
 				if err := json.NewEncoder(cw).Encode(request.NewMessage(messages.MsgUnauthorized)); err != nil {
 					slog.Warn("Failed to write response", slog.String(logging.KeyError, err.Error()))
@@ -119,8 +119,8 @@ func (a *app) middlewareHttp(handler Controller, authOption AuthOption) http.Han
 			// Attach the relevant proxy auth headers.
 			r.Header.Set("Proxy-Authentication-Info", "internal")
 
-			slog.Debug("Valid basic auth credentials provided", slog.String("remote_addr", r.RemoteAddr),
-				slog.String("url", r.URL.String()))
+			slog.Debug("Proxying request", slog.String("url", r.URL.String()),
+				slog.String("username", username))
 		default:
 			slog.Error("Invalid auth option", slog.Int("auth_option", int(authOption)))
 			cw.WriteHeader(http.StatusInternalServerError)
