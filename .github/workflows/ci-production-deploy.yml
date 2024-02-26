@@ -81,7 +81,7 @@ jobs:
           token: ${{ secrets.PAT_TOKEN }}
 
       - name: Deploy Proxier
-        uses: WyriHaximus/github-action-helm3@v3
+        uses: WyriHaximus/github-action-helm3@v4
         with:
           exec: helm upgrade --install proxier ./charts --values charts/valueFiles/prod-1/proxier.yaml --set image.tag=${{ steps.vars_deploy.outputs.sha_short_deploy }}
           kubeconfig: '${{ secrets.KUBE_CONFIG }}'
